@@ -1,1 +1,24 @@
 # CodeForGoodMicrosite
+
+# Github Commands
+
+## After I made changes to a file:
+
+Say you made changes to `hello_world.html` and you want to push it to github. Just run the following:
+```
+git add hellow_world.html
+git commit -m 'I just changed hello_world!'
+git push -u origin master
+```
+
+#### What's the `-u`? 
+
+You don't actually need it, but if you do it on the first push, then on your subsequent pushes, you only need to type `git push` instead of `git push origin master`
+
+#### What's `master`?
+
+`master` is the master branch. You can have multiple branches. 
+
+#### More on github: [here](https://education.github.com/git-cheat-sheet-education.pdf)
+
+
