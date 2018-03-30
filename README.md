@@ -1,5 +1,11 @@
 # CodeForGoodMicrosite
 
+# Firebase Resources
+
+- [Read and Write Data](https://firebase.google.com/docs/database/web/read-and-write)
+- [Structuring your Data](https://firebase.google.com/docs/database/web/structure-data)
+- [Reference](https://firebase.google.com/docs/reference/js/firebase.database.Reference)
+
 # Github Commands
 
 ## After I made changes to a file:
