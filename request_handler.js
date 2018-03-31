@@ -318,13 +318,30 @@ function create_event(name){
 }
 
 
+// var userId = firebase.auth().currentUser.uid;
+// return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
+//   var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+//   // ...
+// });
 
-function request_handler(event, request){
-	firebase.database().ref(event).child("count").set()
-	for (i=0; i<request.length; i++){
-		firebase.database().ref(event).child("country").set
-	}
-	
+function edit_db(event, request){
+	let database = firebase.database().ref().child(event);
+	database.once('value').then(function(snapshot){
+		let initialVal = snapshot.val();
+		initialVal["count"]+=request.length;
+		for (i=0; i<request.length; i++){
+			initialVal["countries"][request[i]]++;
+			}
+		console.log(initialVal)
+		return firebase.database().ref().child(event).update(initialVal);
+	}, function(err){
+		return ("Something went wrong")
+	});
+
+}
+
+function read_db(event){
+
 }
 
 
