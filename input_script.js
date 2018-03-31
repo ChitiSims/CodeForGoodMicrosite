@@ -221,7 +221,16 @@ firebase.initializeApp(config);
 
 })();
 
-
+function inlist(element, list){
+	let result = false
+ for(let i = 0 ; i < list.length; i++){
+ 	if (list[i] === element){
+ 		result = true
+ 		return result
+ 	}
+ 	return result
+ }
+}
 
 function remove_ele(element){
 	let dispose = document.getElementById(element)
@@ -272,9 +281,11 @@ function main(){
 
 	 selection.addEventListener("click", function (){
 	 	console.log('HERE')
+	 	if (!inlist(display(), selections_code)){
 	 	selections_code.push(display())
 	 	selections_country.push(country.getName(display()))
 	 	create_list(selections_country)
+	 }
 
 	 })
 
