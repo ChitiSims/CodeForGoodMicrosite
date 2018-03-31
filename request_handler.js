@@ -303,12 +303,16 @@ firebase.initializeApp(config);
 
 function base_format(){
 	let event = {}
-	for (i=0; i < Object.keys(countriesData).length; i++){
-		event[countriesData[i]] = 0
+	console.log(Object.keys(countriesData).length);
+	console.log(countriesData);
+	for (var key in countriesData){
+		console.log(key)
+		event[countriesData[key]] = 0
 	}
 	return event;
 
 }
+
 function request_handler(event, request){
 	
 }
