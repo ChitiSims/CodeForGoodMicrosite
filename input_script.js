@@ -1,3 +1,13 @@
+const config = {
+apiKey: "AIzaSyBjGBLVPxiEzET1mqtZebJgXwsbVQE_3Ck",
+authDomain: "codeforgoodsite.firebaseapp.com",
+databaseURL: "https://codeforgoodsite.firebaseio.com",
+projectId: "codeforgoodsite",
+storageBucket: "codeforgoodsite.appspot.com",
+messagingSenderId: "824518102248"
+};
+firebase.initializeApp(config);
+
 (function(){
 	var countriesData =  {
   "United Arab Emirates": "AE",
@@ -212,20 +222,12 @@
 })();
 
 
-function create_list(chosen){
 
-	let myDiv = document.getElementById("displayed_country")
-	let size  = myDiv.childElementCount
-	if(size > 0){
-		myDiv.innerHTML = "";
-		}
-	console.log(chosen)
-	for (let i = 0; i < chosen.length; i++) {
-	    let li = document.createElement("li");
-	    li.id = chosen[i];
-	    li.innerText = chosen[i];
-	    myDiv.appendChild(li);
-}
+function remove_ele(element){
+	let dispose = document.getElementById(element)
+	dispose.innerHTML = "";
+
+
 }
 
 function display(){
@@ -239,19 +241,34 @@ function update_map(code){
 
 }	
 
+function edit_db(event, request){
+	let database = firebase.database().ref().child(event);
+	database.once('value').then(function(snapshot){
+		let initialVal = snapshot.val();
+		initialVal["count"]+=request.length;
+		for (i=0; i<request.length; i++){
+			initialVal["countries"][request[i]]++;
+			}
+		console.log(initialVal)
+		return firebase.database().ref().child(event).update(initialVal);
+	}, function(err){
+		return ("Something went wrong")
+	});
+
+}
+
 
 
 window.addEventListener("load", main);
-
-function main(){
 	let selections_country = []
 	let selections_code = []
 	let country = new CountryCode();
+function main(){
+
 
 	let selection = document.getElementById("store")
 	let my_map_trigger = document.getElementById("done")
 	let clear_chosen = document.getElementById("clear")
-
 
 	 selection.addEventListener("click", function (){
 	 	console.log('HERE')
@@ -268,12 +285,40 @@ function main(){
 	 })
 
 	my_map_trigger.addEventListener("click", function(){
+		// for (i = 0; i < selections_code.length; i++){
+		// 	console.log(selections_code[i])
+		//update_map(selections_code[i])
 		console.log(selections_code)
-		for (i = 0; i < selections_code.length; i++){
-			console.log(selections_code[i])
-		update_map(selections_code[i])
-	}
+		edit_db("event5",selections_code)
+	 	selections_code = []
+	 	selections_country = []
+	 	create_list(selections_country)
+
 	})
 
 	
+}
+function create_list(chosen){
+
+	let myDiv = document.getElementById("displayed_country")
+	let size  = myDiv.childElementCount
+	if(size > 0){
+		myDiv.innerHTML = "";
+		}
+	console.log(chosen)
+	for (let i = 0; i < chosen.length; i++) {
+	    let li = document.createElement("li");
+	    let removal = document.createElement("button")
+	    removal.id = chosen[i]
+	    removal.innerText = "remove"
+	    li.id = chosen[i];
+	    li.innerText = chosen[i];
+	    myDiv.appendChild(li);
+	    li.appendChild(removal)
+	    removal.addEventListener("click", function(){
+	    	selections_country.splice(removal.id,1)
+	    	selections_code.splice(country.getCode(removal.id), 1)
+	    	create_list(selections_country)
+	    })
+}
 }
