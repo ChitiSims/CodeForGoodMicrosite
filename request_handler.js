@@ -318,12 +318,6 @@ function create_event(name){
 }
 
 
-// var userId = firebase.auth().currentUser.uid;
-// return firebase.database().ref('/users/' + userId).once('value').then(function(snapshot) {
-//   var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
-//   // ...
-// });
-
 function edit_db(event, request){
 	let database = firebase.database().ref().child(event);
 	database.once('value').then(function(snapshot){
@@ -332,7 +326,6 @@ function edit_db(event, request){
 		for (i=0; i<request.length; i++){
 			initialVal["countries"][request[i]]++;
 			}
-		console.log(initialVal)
 		return firebase.database().ref().child(event).update(initialVal);
 	}, function(err){
 		return ("Something went wrong")
@@ -340,8 +333,19 @@ function edit_db(event, request){
 
 }
 
-function read_db(event){
 
+// var starCountRef = firebase.database().ref('posts/' + postId + '/starCount');
+// starCountRef.on('value', function(snapshot) {
+//   updateStarCount(postElement, snapshot.val());
+// });
+
+function read_db(event){
+	let database = firebase.database().ref().child(event);
+	database.on('value', function(snapshot){
+		let data = snapshot.val();
+		console.log(data["countries"]);
+		return data["countries"];
+	})
 }
 
 
