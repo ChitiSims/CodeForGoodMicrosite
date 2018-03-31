@@ -250,16 +250,23 @@ function main(){
 
 	let selection = document.getElementById("store")
 	let my_map_trigger = document.getElementById("done")
+	let clear_chosen = document.getElementById("clear")
 
 
 	 selection.addEventListener("click", function (){
 	 	console.log('HERE')
 	 	selections_code.push(display())
-	 	selections_country.push(country.getName(display().toLowerCase()))
+	 	selections_country.push(country.getName(display()))
 	 	create_list(selections_country)
-	 	//document.getElementById("display").innerText= selections_country
 
 	 })
+
+	 clear_chosen.addEventListener("click", function(){
+	 	selections_code = []
+	 	selections_country = []
+	 	create_list(selections_country)
+	 })
+
 	my_map_trigger.addEventListener("click", function(){
 		console.log(selections_code)
 		for (i = 0; i < selections_code.length; i++){
