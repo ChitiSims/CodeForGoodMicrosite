@@ -7,7 +7,7 @@ var myDiv = document.getElementById("yo")
 
 //Create and append select list
 var selectList = document.createElement("select");
-selectList.id = "country";
+selectList.id = "added_country";
 myDiv.appendChild(selectList);
 
 //Create and append the options
@@ -15,14 +15,13 @@ for (var i = 0; i < country.length; i++) {
     var option = document.createElement("option");
     option.value = country[i];
     option.text = country[i];
-    option.select
     selectList.appendChild(option);
 }
 }
 
 function display(){
-	let x = document.getElementById("country").
-	document.getElementById("display").innerHTML = x
+	let x = document.getElementById("country").value
+	document.getElementById("display").innerHTML= x
 }
 
 
@@ -33,10 +32,13 @@ window.addEventListener("load", main);
 function main(){
 
 	let add = document.getElementById("add-more")
-	//let select = document.getElementById("store")
+	let select = document.getElementById("store")
 
 	add.addEventListener("click", select)
-	//select.addEventListener("click", display)
+	select.addEventListener("click", function (){
+		display()
+		select()
+	})
 
 
 	
