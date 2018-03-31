@@ -7,8 +7,8 @@
 	<link rel = "stylesheet" href = "input_style.css">
 </head>
 <body id = "yo">
-	<img src = "logo.png"></img>
-	<p>Select your country of origin :</p>
+	<img src = "logo.png" alt = "Facing History logo" id = "logo"></img>
+	<p id = "select_ori">Select your country of origin :</p>
 
 	<select id = "country" required>
 	<option value = "sup" selected>--Select a country--</option>
@@ -194,12 +194,13 @@
 	<button id = "store">
 		Select
 	</button>
+	<button id = "clear">
+	Clear
+</button>
 	<button id = "done">
 		Submit
 	</button>
-	<button id = "clear">
-		Clear
-	</button>
+
 <ul id = "displayed_country">
 	
 </ul>

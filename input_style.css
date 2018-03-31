@@ -1,8 +1,51 @@
 body {
 	background-color: #003b4c;
+	text-align: center;
+	margin: 14rem 1rem 1rem 1rem;
 }
 
 #logo{
-	width: 1000px; 
-	height: 1000px;
+	height: 10rem;
+
+
+}
+#country{
+	width: 20rem;
+	height:2rem ;
+	border-radius: 8px;
+	background-color: #cecdcc;
+
+}
+#select_ori{
+	font-family:  "adelle","Georgia","Times New Roman",serif;
+	font-size: 1.25rem;
+	color: #cecdcc;
+}
+#store: hover{
+	background-color:#003b4c ;
+}
+#store{
+	background-color: grey;
+	color: #003b4c;
+	height:2rem;
+	width:5rem;
+	border: none;
+	border-radius: 8px;
+
+}
+#done{
+	background-color: grey;
+	color: #003b4c;	
+	height:2rem;
+	width:5rem;
+	border: none;
+	border-radius: 8px;
+}
+#clear{
+	background-color: grey;
+	color: #003b4c;
+	height:2rem;
+	width:5rem;	
+	border: none;
+	border-radius: 8px;
 }

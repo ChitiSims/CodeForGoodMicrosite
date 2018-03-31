@@ -281,7 +281,7 @@ function main(){
 
 	 selection.addEventListener("click", function (){
 	 	console.log('HERE')
-	 	if (!inlist(display(), selections_code)){
+	 	if (!inlist(display(), selections_code) && display() === undefined){
 	 	selections_code.push(display())
 	 	selections_country.push(country.getName(display()))
 	 	create_list(selections_country)
