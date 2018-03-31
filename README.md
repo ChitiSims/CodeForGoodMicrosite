@@ -1,15 +1,18 @@
 # CodeForGoodMicrosite
 
+
+## HTML
+
+- [Example of Adding DOM Elements with JS](https://github.com/mit6148-workshops/catbook-workshop4/blob/step6/public/js/feed.js)
 # Firebase Resources
 
 - [Read and Write Data](https://firebase.google.com/docs/database/web/read-and-write)
 - [Structuring your Data](https://firebase.google.com/docs/database/web/structure-data)
 - [Reference](https://firebase.google.com/docs/reference/js/firebase.database.Reference)
-- [Example of Adding Items](https://github.com/mit6148-workshops/catbook-workshop4/blob/step6/public/js/feed.js)
 
-# Github Commands
+## Github Commands
 
-## After I made changes to a file:
+### After I made changes to a file:
 
 Say you made changes to `hello_world.html` and you want to push it to github. Just run the following:
 ```
