@@ -18,6 +18,15 @@ git commit -m 'I just changed hello_world!'
 git push -u origin master
 ```
 
+Or, to just add all the modified files:
+
+```
+git pull
+git add -A
+git commit -m 'I just changed hello_world!'
+git push -u origin master
+```
+
 #### What's the `-u`? 
 
 You don't actually need it, but if you do it on the first push, then on your subsequent pushes, you only need to type `git push` instead of `git push origin master`
