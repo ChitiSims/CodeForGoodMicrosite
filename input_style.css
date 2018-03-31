@@ -3,7 +3,9 @@ body {
 	text-align: center;
 	margin: 14rem 1rem 1rem 1rem;
 }
-
+*{
+	transition: all 300ms;
+}
 #logo{
 	height: 10rem;
 
@@ -21,9 +23,7 @@ body {
 	font-size: 1.25rem;
 	color: #cecdcc;
 }
-#store: hover{
-	background-color:#003b4c ;
-}
+
 #store{
 	background-color: grey;
 	color: #003b4c;
@@ -32,6 +32,9 @@ body {
 	border: none;
 	border-radius: 8px;
 
+}
+button:hover{
+	background-color:#cecdcc !important;
 }
 #done{
 	background-color: grey;

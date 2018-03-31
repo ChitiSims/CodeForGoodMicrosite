@@ -296,14 +296,13 @@ function main(){
 	 })
 
 	my_map_trigger.addEventListener("click", function(){
-		// for (i = 0; i < selections_code.length; i++){
-		// 	console.log(selections_code[i])
-		//update_map(selections_code[i])
 		console.log(selections_code)
 		edit_db("event5",selections_code)
 	 	selections_code = []
 	 	selections_country = []
+	 	if(window.confirm("Are you sure you want to submit?")){
 	 	create_list(selections_country)
+	}
 
 	})
 
