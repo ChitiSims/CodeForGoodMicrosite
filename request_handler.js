@@ -299,20 +299,31 @@ firebase.initializeApp(config);
 
 })();
 
-
-
-function base_format(){
-	let event = {}
-	console.log(Object.keys(countriesData).length);
-	console.log(countriesData);
+function base_format(name){
+	let event_name = name;
+	let main_event = {};
+	let event = {};
+	let countries = {};
+	let count = 0;
 	for (var key in countriesData){
-		console.log(key)
-		event[countriesData[key]] = 0
+		countries[countriesData[key]] = 0
 	}
-	return event;
+	event["countries"] = countries;
+	event["count"] = count;
+	main_event[event_name] = event;
+	return main_event;
 
 }
+function create_event(name){
+	event_name = name;
+	firebase.database().ref(name).set(base_format(event_name)[name]);
+}
+
+
 
 function request_handler(event, request){
 	
 }
+
+// create_event()
+// create_event()
