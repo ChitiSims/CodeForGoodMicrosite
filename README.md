@@ -12,6 +12,7 @@
 
 Say you made changes to `hello_world.html` and you want to push it to github. Just run the following:
 ```
+git pull
 git add hellow_world.html
 git commit -m 'I just changed hello_world!'
 git push -u origin master
