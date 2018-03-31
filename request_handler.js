@@ -300,7 +300,6 @@ firebase.initializeApp(config);
 })();
 
 function base_format(name){
-	let event_name = name;
 	let main_event = {};
 	let event = {};
 	let countries = {};
@@ -310,20 +309,24 @@ function base_format(name){
 	}
 	event["countries"] = countries;
 	event["count"] = count;
-	main_event[event_name] = event;
+	main_event[name] = event;
 	return main_event;
 
 }
 function create_event(name){
-	event_name = name;
-	firebase.database().ref(name).set(base_format(event_name)[name]);
+	firebase.database().ref(name).set(base_format(name)[name]);
 }
 
 
 
 function request_handler(event, request){
+	firebase.database().ref(event).child("count").set()
+	for (i=0; i<request.length; i++){
+		firebase.database().ref(event).child("country").set
+	}
 	
 }
+
 
 // create_event()
 // create_event()
