@@ -212,8 +212,20 @@
 })();
 
 
-function create_list(){
-	let 
+function create_list(chosen){
+
+	let myDiv = document.getElementById("displayed_country")
+	let size  = myDiv.childElementCount
+	if(size > 0){
+		myDiv.innerHTML = "";
+		}
+	console.log(chosen)
+	for (let i = 0; i < chosen.length; i++) {
+	    let li = document.createElement("li");
+	    li.id = chosen[i];
+	    li.innerText = chosen[i];
+	    myDiv.appendChild(li);
+}
 }
 
 function display(){
@@ -222,7 +234,6 @@ function display(){
 }
 
 function update_map(code){
-	console.log(code)
 	let target = document.getElementById(code)
 	target.style.fill = "green"
 
@@ -231,7 +242,6 @@ function update_map(code){
 
 
 window.addEventListener("load", main);
-
 
 function main(){
 	let selections_country = []
@@ -246,7 +256,8 @@ function main(){
 	 	console.log('HERE')
 	 	selections_code.push(display())
 	 	selections_country.push(country.getName(display().toLowerCase()))
-	 	document.getElementById("display").innerText= selections_country
+	 	create_list(selections_country)
+	 	//document.getElementById("display").innerText= selections_country
 
 	 })
 	my_map_trigger.addEventListener("click", function(){
