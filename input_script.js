@@ -24,8 +24,11 @@ function display(){
 		return x
 }
 
-function update_map(){
-	let target = document.getElementById("")
+function update_map(code){
+	console.log(code)
+	let target = document.getElementById(code)
+	target.style.fill = "green"
+
 }	
 
 
@@ -34,23 +37,27 @@ window.addEventListener("load", main);
 
 
 function main(){
+	let selections = []
 
 	let add = document.getElementById('add-more')
 	let selection = document.getElementById("store")
-	let my_map = document.getElementById("done")
+	let my_map_trigger = document.getElementById("done")
 
-	my_map.addEventListener("click", function(){
-		update_map()
-	})
+
+
 
 	add.addEventListener("click", function (){
 		select()
 	})
 
 	 selection.addEventListener("click", function (){
-	 	document.getElementById("display").innerText= display()
-	 })
+	 	selections.push(display())
+	 	document.getElementById("display").innerText= selections
 
+	 })
+	my_map_trigger.addEventListener("click", function(){
+		update_map(display())
+	})
 
 	
 }
