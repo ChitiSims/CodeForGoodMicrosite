@@ -1,0 +1,19 @@
+body{
+    align-content: center;
+    overflow: hidden;
+}
+
+#header{
+    width: 110%;
+    float: left;
+    height: 3.7vw;
+    text-align: center;
+    background-color: #003b4c;
+    color: white;
+    margin-left: -3.7%;
+    margin-top: -1.52%;
+    margin-bottom: 1.5%;
+    padding: 0px;
+    float: left;
+    
+}

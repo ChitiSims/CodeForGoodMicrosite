@@ -339,11 +339,16 @@ function get_shade_values(country_dict){
 function update_map(code, shade_val){
 	console.log(code)
 	let target = document.getElementById(code);
-	target.style.fill = 'green';
+	target.style.fill = '#003b4c';
     target.style.fillOpacity = shade_val;
 
 }	
 
+function update_map2(code){
+    let target = document.getElementById(code);
+    target.style.fill = '#003b4c';
+    target.style.fillOpacity = .05;
+}
 
 function read_db(event){
 	let database = firebase.database().ref().child(event);
@@ -354,16 +359,19 @@ function read_db(event){
         var shade_dict = get_shade_values(country_dict)
         console.log(shade_dict)
         for (var key in shade_dict){
-            if (shade_dict[key] != 0){
+            if(shade_dict[key] != 0){
                 if (shade_dict[key] < 0.3){
                     update_map(key, 0.3)
                 }
-                else if (shade_dict[key] > 0.9){
-                    update_map(key, 0.9)
+                else if (shade_dict[key] > 0.8){
+                    update_map(key, 0.8)
                 }
                 else{
                     update_map(key, shade_dict[key]);
                 }
+            }
+            else{
+                update_map2(key)
             }
         }
 	})
