@@ -18,6 +18,12 @@ body {
 	background-color: #cecdcc;
 
 }
+
+#heading{
+	font-family: 'Berkshire Swash', cursive;
+	font-size: 1.5rem;
+	color: #cecdcc;
+}
 #select_ori{
 	font-family:  "adelle","Georgia","Times New Roman",serif;
 	font-size: 1.25rem;
