@@ -1,5 +1,10 @@
 # CodeForGoodMicrosite
 
+## Notes
+
+- Make sure that people can't submit if they didn't input anything.
+- Make sure that the opacity is not 0 when started.
+- Make sure the maximum count is also not 0 when just started.
 - Link to what I wrote: [here](https://github.com/robertvunabandi/cfd/tree/master/cfdBackup). Use this as a reference and a learning tool. - Robert
 
 ## HTML
