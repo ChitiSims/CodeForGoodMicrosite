@@ -17,3 +17,8 @@ body{
     float: left;
     
 }
+
+path {
+    stroke: rgba(0,0,0,0.2);
+    stroke-width: 1px;
+}
