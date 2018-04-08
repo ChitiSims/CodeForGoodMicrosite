@@ -3,7 +3,8 @@
 <head>
 	<title>Facing History</title>
     <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
-	<script src="output_script.js"></script>
+	<script type = "text/javascript" src="output_script.js"></script>
+    <script type="text/javascript" src="fbHelpers.js"></script>
     <link rel = "stylesheet" href = "output_style.css">
 </head>
 <body id = "yo">
@@ -1251,7 +1252,15 @@
 
 	
 </div>
-
+    
+<div id="event-selection-box">
+  <span id="admin-only-text">Admin Only</span>
+  <span> Set event: </span>
+  <input type="text" id="input-event" placeholder="event name"/>
+  <input type="submit" id="create-event" value="add event"/>
+  <span class="separator"></span>
+  
+</div>
 
 </body>
 </html>
