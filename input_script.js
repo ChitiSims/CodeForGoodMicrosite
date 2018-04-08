@@ -342,7 +342,7 @@ function main(){
       reset_event("Facing_History")
       res = 'Event has been reset'
     } else{
-      res = 'You do not have authorisation to do this'
+      res = 'Access Denied'
     }
     document.getElementById('lol').innerText = res
    })
