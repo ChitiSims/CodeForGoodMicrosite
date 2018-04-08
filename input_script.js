@@ -299,17 +299,14 @@ function read_db(event){
 }
 
 function reset_event(event){
+  let timestamp = new Date()
+  let database = firebase.database().ref()
+  database.child(event).once('value', function(snapshot){
+  database.child(event + timestamp).set(snapshot.val());
   removeDataFromDatabase(event);
   create_event(event);
 }
 
-function backup(event){
-  let timestamp = new Date()
-  let database = firebase.database().ref()
-  database.child(event).once('value', function(snapshot){
-    database.child(event + timestamp).set(snapshot.val());
-});
-}
 
 function most_represented(event){
     let country = new CountryCode();
@@ -367,7 +364,6 @@ function main(){
     let res = ''
     let code = window.prompt("Enter Key: ", "--enter code--")
     if(code == "FacingHistorySecret" ){
-      backup("Facing_History")
       reset_event("Facing_History")
       res = 'Event has been reset'
     } else{
