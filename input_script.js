@@ -270,6 +270,7 @@ function removeDataFromDatabase(event){
     firebase.database().ref().child(event).remove();
 }
 
+
 function base_format(name){
   let main_event = {};
   let event = {};
@@ -365,30 +366,35 @@ function main(){
 	}
 
 	})
+  function create_list(chosen){
+
+  let myDiv = document.getElementById("displayed_country")
+  let size  = myDiv.childElementCount
+  if(size > 0){
+    myDiv.innerHTML = "";
+    }
+  console.log(chosen)
+  for (let i = 0; i < chosen.length; i++) {
+      let li = document.createElement("li");
+      let removal = document.createElement("button")
+      removal.id = chosen[i]
+      removal.innerText = "remove"
+      li.id = chosen[i];
+      li.innerText = chosen[i];
+      myDiv.appendChild(li);
+      li.appendChild(removal)
+      removal.addEventListener("click", function(){
+        let index = selections_country.indexOf(removal.id)
+        selections_country.splice(index,1)
+        console.log(removal.id)
+        console.log(removal.innerText)
+        selections_code.splice(index, 1)
+        create_list(selections_country)
+        console.log(selections_country)
+      })
+}
+  }
 	
 }
-function create_list(chosen){
 
-	let myDiv = document.getElementById("displayed_country")
-	let size  = myDiv.childElementCount
-	if(size > 0){
-		myDiv.innerHTML = "";
-		}
-	console.log(chosen)
-	for (let i = 0; i < chosen.length; i++) {
-	    let li = document.createElement("li");
-	    let removal = document.createElement("button")
-	    removal.id = chosen[i]
-	    removal.innerText = "remove"
-	    li.id = chosen[i];
-	    li.innerText = chosen[i];
-	    myDiv.appendChild(li);
-	    li.appendChild(removal)
-	    removal.addEventListener("click", function(){
-	    	selections_country.splice(removal.id,1)
-	    	selections_code.splice(country.getCode(removal.id), 1)
-	    	create_list(selections_country)
-	    })
-}
 
-}

@@ -2,6 +2,17 @@ body{
     align-content: center;
 }
 
+#uh{
+  width: 50rem;
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  padding: 0.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 1);
+  position:relative;
+  right: -80rem;
+  bottom: -1rem;
+}
 #header{
     width: 110%;
     float: left;
