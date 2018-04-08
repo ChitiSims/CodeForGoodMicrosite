@@ -387,15 +387,12 @@ function main(){
     
     function addEventSelectionOnBodyThenLoadMap() {
           let event_selection = document.getElementById("input-event");
-          console.log(event_selection);
-          let event_deletion_selection =  document.getElementById("event-selected-delete");
+
           // remove every children
           while (event_selection.children.length > 0) {
             event_selection.removeChild(event_selection.children[0]);
           }
-          while (event_deletion_selection.children.length > 0) {
-            event_deletion_selection.removeChild(event_deletion_selection.children[0]);
-          }
+
           // load the new event names then append them to
           // the list of options to select events from
           
@@ -408,7 +405,6 @@ function main(){
             // set the event to be whatever is currently on the value
             chosen_event_name = event_selection.value;
             read_db(chosen_event_name);
-        console.log(chosen_event_name);
           };
     addEventSelectionOnBodyThenLoadMap();
 }
