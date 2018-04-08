@@ -4,7 +4,7 @@
 	<title>Facing History</title>
     <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
 	<script type = "text/javascript" src="output_script.js"></script>
-    <script type="text/javascript" src="fbHelpers.js"></script>
+    <script type="text/javascript" src="firebaseHelper.js"></script>
     <link rel = "stylesheet" href = "output_style.css">
 </head>
 <body id = "yo">
@@ -1252,14 +1252,25 @@
 
 	
 </div>
-    
+
+    <div id="data-overview">
+  <div><span id="count" class="overview-data">0</span> countries</div>
+  <div><span id="responses" class="overview-data">0</span> responses</div>
+</div>
 <div id="event-selection-box">
   <span id="admin-only-text">Admin Only</span>
-  <span> Set event: </span>
+  <span> Choose event: </span>
+  <select id="event-selected"></select>
+  <span class="separator"></span>
+  <span> Create event: </span>
   <input type="text" id="input-event" placeholder="event name"/>
   <input type="submit" id="create-event" value="add event"/>
   <span class="separator"></span>
-  
+  <span> Delete event: </span>
+  <select id="event-selected-delete"></select>
+  <input type="submit" id="delete-event" value="delete event"/>
+  <span class="separator"></span>
+  <input type="button" id="download-data" value="download data as .json">
 </div>
 
 </body>
