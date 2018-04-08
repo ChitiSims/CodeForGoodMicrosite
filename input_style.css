@@ -43,14 +43,14 @@ button:hover{
 	background-color:#cecdcc !important;
 
 }
-/*button{
+button{
 	background-color: grey;
 	color: #003b4c;	
 	height:2rem;
 	width:5rem;
 	border: none;
 	border-radius: 8px;	
-}*/
+}
 #done{
 	background-color: grey;
 	color: #003b4c;	

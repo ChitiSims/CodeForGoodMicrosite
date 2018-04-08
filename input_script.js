@@ -311,7 +311,35 @@ function backup(event){
 });
 }
 
+function most_represented(event){
+    let country = new CountryCode();
+    let database = firebase.database().ref().child(event);
+    let most_represented_count = []
+    database.on('value', function(snapshot){
+    let data = snapshot.val();
+    let countries = data["countries"];
+    let vals = Object.values(countries);
+    let max_of_vals = Math.max.apply(Math, vals);
+    console.log(max_of_vals);
+    for (let key in countries){
+        if (countries[key] == max_of_vals){
+            let nameOfCountry = country.getName(key)
+            most_represented_count.push(nameOfCountry)
+            }
+    }
+})
+    return most_represented_count;
+}
 
+
+
+function total_entries(event){
+    let database = firebase.database().ref().child(event);
+    database.on('value', function(snapshot){
+        let data = snapshot.val();
+        return data["count"];
+    })
+}
 
 window.addEventListener("load", main);
 	let selections_country = []

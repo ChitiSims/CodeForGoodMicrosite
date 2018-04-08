@@ -375,7 +375,75 @@ function read_db(event){
             }
         }
     })
+        let rep = document.getElementById("rep")
+    let count = document.getElementById("count")
+    
+    let country = new CountryCode();
+    //let database = firebase.database().ref().child(event);
+    let most_represented_count = []
+    database.on('value', function(snapshot){
+    let data = snapshot.val();
+    let countries = data["countries"];
+    let vals = Object.values(countries);
+    let max_of_vals = Math.max.apply(Math, vals);
+    console.log(max_of_vals);
+    res = ''
+    let  uh = ', '
+
+    for (let key in countries){
+        if(countries.length === 1 ){
+             uh = ""
+         }
+         console.log(countries)
+        if (countries[key] == max_of_vals && max_of_vals != 0){
+            let nameOfCountry = country.getName(key)
+            most_represented_count.push(nameOfCountry)
+            res = res + nameOfCountry + uh
+
+        
+            
+            }
+    }
+
+
+
+    total_entries("Facing_History")
+    
+    rep.innerText = "Most Represented Country: " + String(res)
+})
 }
+// function most_represented(event){
+//     res = ''
+//     let country = new CountryCode();
+//     let database = firebase.database().ref().child(event);
+//     let most_represented_count = []
+//     database.on('value', function(snapshot){
+//     let data = snapshot.val();
+//     let countries = data["countries"];
+//     let vals = Object.values(countries);
+//     let max_of_vals = Math.max.apply(Math, vals);
+//     console.log(max_of_vals);
+//     for (let key in countries){
+//         if (countries[key] == max_of_vals){
+//             let nameOfCountry = country.getName(key)
+//             most_represented_count.push(nameOfCountry)
+
+//             }
+//     }
+// })
+//     return (most_represented_count);
+// }
+
+    function total_entries(event){
+    let database = firebase.database().ref().child(event);
+    database.on('value', function(snapshot){
+        let data = snapshot.val();
+        count.innerText = "Total Responses: " + String(data["count"]);
+    })
+}
+
+
+
 
 window.addEventListener("load", main);
 
@@ -385,5 +453,4 @@ function main(){
     let country = new CountryCode();
     
     read_db('Facing_History')
-    
 }
