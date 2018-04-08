@@ -305,7 +305,7 @@ function reset_event(event){
   database.child(event + timestamp).set(snapshot.val());
   removeDataFromDatabase(event);
   create_event(event);
-}
+})}
 
 
 function most_represented(event){
@@ -403,6 +403,7 @@ function main(){
       let removal = document.createElement("button")
       removal.id = chosen[i]
       removal.innerText = "remove"
+      removal.class = "removal"
       li.id = chosen[i];
       li.innerText = chosen[i];
       myDiv.appendChild(li);
