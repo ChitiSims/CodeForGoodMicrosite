@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Facing History: Input</title>
-	 <link href="https://fonts.googleapis.com/css?family=Berkshire+Swash" rel="stylesheet"> 
+	<title>Facing History</title>
 	<script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
 	<script src="input_script.js"></script>
 	<link rel = "stylesheet" href = "input_style.css">
 </head>
 <body id = "yo">
-	<img src = "logo.png" alt = "Facing History logo" id = "logo"></img>
-	<p id = "heading">The Places That Matter.</p>
-	<p id = "select_ori">Please select all the countries that are part of your story. </p>
+	<img src = "logo.png" alt = "Facing History logo" id = "logo" ></img>
+	<p id = "select_ori">Select your country of origin :</p>
 
 	<select id = "country" required>
 	<option value = "sup" selected>--Select a country--</option>
@@ -199,6 +197,7 @@
 	<button id = "clear">
 	Clear
 </button>
+
 	<button id = "done">
 		Submit
 	</button>
@@ -206,11 +205,5 @@
 <ul id = "displayed_country">
 	
 </ul>
-<p> Event Selection(for admin use only) </p>
-<form>
-	Event:
-	<br> <input type="text" id = "even" value = "uh">
-</br>
-</form>
 </body>
 </html>

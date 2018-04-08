@@ -41,6 +41,15 @@ body {
 }
 button:hover{
 	background-color:#cecdcc !important;
+
+}
+button{
+	background-color: grey;
+	color: #003b4c;	
+	height:2rem;
+	width:5rem;
+	border: none;
+	border-radius: 8px;	
 }
 #done{
 	background-color: grey;
@@ -57,4 +66,7 @@ button:hover{
 	width:5rem;	
 	border: none;
 	border-radius: 8px;
+}
+#displayed_country{
+	color: white;
 }

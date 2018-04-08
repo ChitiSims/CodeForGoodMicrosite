@@ -278,6 +278,7 @@ function main(){
 	let selection = document.getElementById("store")
 	let my_map_trigger = document.getElementById("done")
 	let clear_chosen = document.getElementById("clear")
+  let event = document.getElementById("event_chose")
 
 	 selection.addEventListener("click", function (){
 	 	if (!inlist(display(), selections_code) && display() !== "sup"){
@@ -297,7 +298,7 @@ function main(){
 
 	my_map_trigger.addEventListener("click", function(){
 		console.log(selections_code)
-		edit_db("event5",selections_code)
+		edit_db(events,selections_code)
 	 	selections_code = []
 	 	selections_country = []
 	 	if(window.confirm("Are you sure you want to submit?")){
@@ -306,6 +307,10 @@ function main(){
 
 	})
 
+  event.addEventListener("click", function(){
+    let input =  getElementById("even")
+      events = input.value
+  })
 	
 }
 function create_list(chosen){
