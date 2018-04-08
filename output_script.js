@@ -8,444 +8,289 @@ messagingSenderId: "824518102248"
 };
 firebase.initializeApp(configuration);
 
-const firebaseHelper = {
-  /** creates the base event, which contains a key
-   * "country" with all the country codes initialized
-   * to 0, "count", which is the number of countries
-   * that people identify with, initialized to 0, and
-   * responses, which is the number of recorded
-   * responses also initialized to 0.
-   * */
-  createBaseEvent() {
-    const countries = {};
-    Object.keys(COUNTRY_DATA).forEach(function (country_name) {
-      let country_code = COUNTRY_DATA[country_name];
-      countries[country_code] = 0;
-    });
-    return { countries, count: 0, responses: 0 };
-  },
-  /** creates a new event with the title "event_name" from
-   * the parameter and saves it into the firebase database
-   * directly. Once created, this calls the callback. */
-  createEvent(event_name, callback) {
-    const db = firebase.database();
-    db.ref(event_name).set(firebaseHelper.createBaseEvent()).then(function (success) {
-      if (callback) {
-        callback();
-      }
-    }, function (error) {
-      if (callback) {
-        console.error(error);
-        callback(error);
-      }
-    });
-  },
-  /** delete an event from the firebase database. this
-   * methods calls the callback when done. */
-  deleteEvent(event_name, callback) {
-    const db = firebase.database();
-    db.ref(event_name).remove().then(function () {
-      if (callback){
-        callback();
-      }
-    }, function (error) {
-      if (callback){
-        callback(error);
-      }
-    });
-  },
-  /** loads the list of events that are currently in the
-   * firebase database and calls the callback function with it */
-  loadAllEventNames(callback) {
-    const db = firebase.database();
-    db.ref().once("value").then(function (snapshot) {
-      callback(Object.keys(snapshot.val()));
-    }, function (error) {
-      let isError = true;
-      callback(error, isError);
-    });
-  },
-  /** loads the list of events that are currently in the
-   * firebase database and calls the callback function with it
-   * this listens for changes, which usually will happen a lot.
-   * so, this methods expects the callback to handle the checking
-   * of whether a change actually happened i.e. additions & such */
-  loadAllEventNamesWithListener(callback) {
-    const db = firebase.database();
-    db.ref().on("value", function (snapshot) {
-      db.ref().once("value").then(function (snapshot) {
-        callback(Object.keys(snapshot.val()));
-      }, function (error) {
-        let isError = true;
-        callback(error, isError);
-      });
-    });
-  },
-  /** loads the data that is specific to one event and calls
-   * the callback function with it. */
-  loadEvent(event_name, callback) {
-    const db = firebase.database();
-    db.ref(event_name).once("value").then(function (snapshot) {
-      callback(snapshot.val());
-    }, function (error) {
-      let isError = true;
-      callback(error, isError);
-    });
-  },
-  /** same as loadEvent except now it will run the callback
-   * whenever a change happens to the data as it listens, from
-   * the firebase server, for changes in the data. */
-  loadEventWithListener(event_name, callback) {
-    const db = firebase.database();
-    const event_ref = db.ref(event_name).on("value", function (snapshot) {
-      callback(snapshot.val());
-    });
-    return event_ref;
-  },
-  /** save a list of countries into an event. this updates the
-   * event with the new list of countries given in the parameters.
-   * this runs the callback with the result of the saved version. */
-  saveIntoEvent(event_name, list, callback) {
-    const db = firebase.database();
-    db.ref(event_name).once("value").then(function (snapshot) {
-      // get then update the current set of data
-      let data = snapshot.val();
-      data.responses = parseFloat(data.responses) + 1;
-      if (isNaN(data.responses)) {
-        data.responses = 1;
-      }
-      list.forEach(function (country_code) {
-        data.countries[country_code] = parseFloat(data.countries[country_code]) + 1;
-        data.count = parseFloat(data.count) + 1;
-      });
-
-      // save the updated version into firebase database
-      db.ref(event_name).set(data).then(function (result) {
-        if (callback) {
-          callback(result);
-        }
-      }, function (error) {
-        let is_error = true;
-        if (callback) {
-          callback(error, is_error);
-        }
-      });
-    }, function (error) {
-      let is_error = true;
-      if (callback) {
-        callback(error, is_error);
-      }
-    });
-  },
-  /** download the data as json into the computer. also includes
-   * the mapping from country code to country name for reference */
-  downloadData() {
-    const db = firebase.database();
-    db.ref().once("value").then(function (snapshot) {
-      // event data
-      firebaseHelper._initializeDownload(snapshot.val(), "events_data");
-      // code to country mapping
-      firebaseHelper._initializeDownload(CODE_TO_COUNTRY, "code_to_country_map");
-    }, function (error) {
-      console.error(error);
-    });
-  },
-  /* helper to start the download of a json file*/
-  _initializeDownload(obj, download_file_name) {
-    // from https://stackoverflow.com/questions/19721439/download-json-object-as-a-file-from-browser
-    const data_str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj));
-    const anchor = document.createElement("a");
-    anchor.setAttribute("href", data_str);
-    anchor.setAttribute("download", download_file_name + ".json");
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-  }
-};
-
 (function(){
-	var countriesData = {
-		"AFGHANISTAN": "AF",
-		"ÅLAND ISLANDS": "AX",
-		"ALBANIA": "AL",
-		"ALGERIA": "DZ",
-		"AMERICAN SAMOA": "AS",
-		"ANDORRA": "AD",
-		"ANGOLA": "AO",
-		"ANGUILLA": "AI",
-		"ANTARCTICA": "AQ",
-		"ANTIGUA AND BARBUDA": "AG",
-		"ARGENTINA": "AR",
-		"ARMENIA": "AM",
-		"ARUBA": "AW",
-		"AUSTRALIA": "AU",
-		"AUSTRIA": "AT",
-		"AZERBAIJAN": "AZ",
-		"BAHAMAS": "BS",
-		"BAHRAIN": "BH",
-		"BANGLADESH": "BD",
-		"BARBADOS": "BB",
-		"BELARUS": "BY",
-		"BELGIUM": "BE",
-		"BELIZE": "BZ",
-		"BENIN": "BJ",
-		"BERMUDA": "BM",
-		"BHUTAN": "BT",
-		"BOLIVIA, PLURINATIONAL STATE OF": "BO",
-		"BONAIRE, SINT EUSTATIUS AND SABA": "BQ",
-		"BOSNIA AND HERZEGOVINA": "BA",
-		"BOTSWANA": "BW",
-		"BOUVET ISLAND": "BV",
-		"BRAZIL": "BR",
-		"BRITISH INDIAN OCEAN TERRITORY": "IO",
-		"BRUNEI DARUSSALAM": "BN",
-		"BULGARIA": "BG",
-		"BURKINA FASO": "BF",
-		"BURUNDI": "BI",
-		"CAMBODIA": "KH",
-		"CAMEROON": "CM",
-		"CANADA": "CA",
-		"CAPE VERDE": "CV",
-		"CAYMAN ISLANDS": "KY",
-		"CENTRAL AFRICAN REPUBLIC": "CF",
-		"CHAD": "TD",
-		"CHILE": "CL",
-		"CHINA": "CN",
-		"CHRISTMAS ISLAND": "CX",
-		"COCOS (KEELING) ISLANDS": "CC",
-		"COLOMBIA": "CO",
-		"COMOROS": "KM",
-		"CONGO": "CG",
-		"CONGO, THE DEMOCRATIC REPUBLIC OF THE": "CD",
-		"COOK ISLANDS": "CK",
-		"COSTA RICA": "CR",
-		"CÔTE D'IVOIRE": "CI",
-		"CROATIA": "HR",
-		"CUBA": "CU",
-		"CURAÇAO": "CW",
-		"CYPRUS": "CY",
-		"CZECH REPUBLIC": "CZ",
-		"DENMARK": "DK",
-		"DJIBOUTI": "DJ",
-		"DOMINICA": "DM",
-		"DOMINICAN REPUBLIC": "DO",
-		"ECUADOR": "EC",
-		"EGYPT": "EG",
-		"EL SALVADOR": "SV",
-		"EQUATORIAL GUINEA": "GQ",
-		"ERITREA": "ER",
-		"ESTONIA": "EE",
-		"ETHIOPIA": "ET",
-		"FALKLAND ISLANDS (MALVINAS)": "FK",
-		"FAROE ISLANDS": "FO",
-		"FIJI": "FJ",
-		"FINLAND": "FI",
-		"FRANCE": "FR",
-		"FRENCH GUIANA": "GF",
-		"FRENCH POLYNESIA": "PF",
-		"FRENCH SOUTHERN TERRITORIES": "TF",
-		"GABON": "GA",
-		"GAMBIA": "GM",
-		"GEORGIA": "GE",
-		"GERMANY": "DE",
-		"GHANA": "GH",
-		"GIBRALTAR": "GI",
-		"GREECE": "GR",
-		"GREENLAND": "GL",
-		"GRENADA": "GD",
-		"GUADELOUPE": "GP",
-		"GUAM": "GU",
-		"GUATEMALA": "GT",
-		"GUERNSEY": "GG",
-		"GUINEA": "GN",
-		"GUINEA-BISSAU": "GW",
-		"GUYANA": "GY",
-		"HAITI": "HT",
-		"HEARD ISLAND AND MCDONALD ISLANDS": "HM",
-		"HOLY SEE (VATICAN CITY STATE)": "VA",
-		"HONDURAS": "HN",
-		"HONG KONG": "HK",
-		"HUNGARY": "HU",
-		"ICELAND": "IS",
-		"INDIA": "IN",
-		"INDONESIA": "ID",
-		"IRAN, ISLAMIC REPUBLIC OF": "IR",
-		"IRAQ": "IQ",
-		"IRELAND": "IE",
-		"ISLE OF MAN": "IM",
-		"ISRAEL": "IL",
-		"ITALY": "IT",
-		"JAMAICA": "JM",
-		"JAPAN": "JP",
-		"JERSEY": "JE",
-		"JORDAN": "JO",
-		"KAZAKHSTAN": "KZ",
-		"KENYA": "KE",
-		"KIRIBATI": "KI",
-		"KOREA, DEMOCRATIC PEOPLE'S REPUBLIC OF": "KP",
-		"KOREA, REPUBLIC OF": "KR",
-		"KUWAIT": "KW",
-		"KYRGYZSTAN": "KG",
-		"LAO PEOPLE'S DEMOCRATIC REPUBLIC": "LA",
-		"LATVIA": "LV",
-		"LEBANON": "LB",
-		"LESOTHO": "LS",
-		"LIBERIA": "LR",
-		"LIBYA": "LY",
-		"LIECHTENSTEIN": "LI",
-		"LITHUANIA": "LT",
-		"LUXEMBOURG": "LU",
-		"MACAO": "MO",
-		"MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF": "MK",
-		"MADAGASCAR": "MG",
-		"MALAWI": "MW",
-		"MALAYSIA": "MY",
-		"MALDIVES": "MV",
-		"MALI": "ML",
-		"MALTA": "MT",
-		"MARSHALL ISLANDS": "MH",
-		"MARTINIQUE": "MQ",
-		"MAURITANIA": "MR",
-		"MAURITIUS": "MU",
-		"MAYOTTE": "YT",
-		"MEXICO": "MX",
-		"MICRONESIA, FEDERATED STATES OF": "FM",
-		"MOLDOVA, REPUBLIC OF": "MD",
-		"MONACO": "MC",
-		"MONGOLIA": "MN",
-		"MONTENEGRO": "ME",
-		"MONTSERRAT": "MS",
-		"MOROCCO": "MA",
-		"MOZAMBIQUE": "MZ",
-		"MYANMAR": "MM",
-		"NAMIBIA": "NA",
-		"NAURU": "NR",
-		"NEPAL": "NP",
-		"NETHERLANDS": "NL",
-		"NEW CALEDONIA": "NC",
-		"NEW ZEALAND": "NZ",
-		"NICARAGUA": "NI",
-		"NIGER": "NE",
-		"NIGERIA": "NG",
-		"NIUE": "NU",
-		"NORFOLK ISLAND": "NF",
-		"NORTHERN MARIANA ISLANDS": "MP",
-		"NORWAY": "NO",
-		"OMAN": "OM",
-		"PAKISTAN": "PK",
-		"PALAU": "PW",
-		"PALESTINE, STATE OF": "PS",
-		"PANAMA": "PA",
-		"PAPUA NEW GUINEA": "PG",
-		"PARAGUAY": "PY",
-		"PERU": "PE",
-		"PHILIPPINES": "PH",
-		"PITCAIRN": "PN",
-		"POLAND": "PL",
-		"PORTUGAL": "PT",
-		"PUERTO RICO": "PR",
-		"QATAR": "QA",
-		"RÉUNION": "RE",
-		"ROMANIA": "RO",
-		"RUSSIAN FEDERATION": "RU",
-		"RWANDA": "RW",
-		"SAINT BARTHÉLEMY": "BL",
-		"SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA": "SH",
-		"SAINT KITTS AND NEVIS": "KN",
-		"SAINT LUCIA": "LC",
-		"SAINT MARTIN (FRENCH PART)": "MF",
-		"SAINT PIERRE AND MIQUELON": "PM",
-		"SAINT VINCENT AND THE GRENADINES": "VC",
-		"SAMOA": "WS",
-		"SAN MARINO": "SM",
-		"SAO TOME AND PRINCIPE": "ST",
-		"SAUDI ARABIA": "SA",
-		"SENEGAL": "SN",
-		"SERBIA": "RS",
-		"SEYCHELLES": "SC",
-		"SIERRA LEONE": "SL",
-		"SINGAPORE": "SG",
-		"SINT MAARTEN (DUTCH PART)": "SX",
-		"SLOVAKIA": "SK",
-		"SLOVENIA": "SI",
-		"SOLOMON ISLANDS": "SB",
-		"SOMALIA": "SO",
-		"SOUTH AFRICA": "ZA",
-		"SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS": "GS",
-		"SOUTH SUDAN": "SS",
-		"SPAIN": "ES",
-		"SRI LANKA": "LK",
-		"SUDAN": "SD",
-		"SURINAME": "SR",
-		"SVALBARD AND JAN MAYEN": "SJ",
-		"SWAZILAND": "SZ",
-		"SWEDEN": "SE",
-		"SWITZERLAND": "CH",
-		"SYRIAN ARAB REPUBLIC": "SY",
-		"TAIWAN, PROVINCE OF CHINA": "TW",
-		"TAJIKISTAN": "TJ",
-		"TANZANIA, UNITED REPUBLIC OF": "TZ",
-		"THAILAND": "TH",
-		"TIMOR-LESTE": "TL",
-		"TOGO": "TG",
-		"TOKELAU": "TK",
-		"TONGA": "TO",
-		"TRINIDAD AND TOBAGO": "TT",
-		"TUNISIA": "TN",
-		"TURKEY": "TR",
-		"TURKMENISTAN": "TM",
-		"TURKS AND CAICOS ISLANDS": "TC",
-		"TUVALU": "TV",
-		"UGANDA": "UG",
-		"UKRAINE": "UA",
-		"UNITED ARAB EMIRATES": "AE",
-		"UNITED KINGDOM": "GB",
-		"UNITED STATES": "US",
-		"UNITED STATES MINOR OUTLYING ISLANDS": "UM",
-		"URUGUAY": "UY",
-		"UZBEKISTAN": "UZ",
-		"VANUATU": "VU",
-		"VENEZUELA, BOLIVARIAN REPUBLIC OF": "VE",
-		"VIET NAM": "VN",
-		"VIRGIN ISLANDS, BRITISH": "VG",
-		"VIRGIN ISLANDS, U.S.": "VI",
-		"WALLIS AND FUTUNA": "WF",
-		"WESTERN SAHARA": "EH",
-		"YEMEN": "YE",
-		"ZAMBIA": "ZM",
-		"ZIMBABWE": "ZW"
-	};
+    var countriesData = {
+        "AFGHANISTAN": "AF",
+        "ÅLAND ISLANDS": "AX",
+        "ALBANIA": "AL",
+        "ALGERIA": "DZ",
+        "AMERICAN SAMOA": "AS",
+        "ANDORRA": "AD",
+        "ANGOLA": "AO",
+        "ANGUILLA": "AI",
+        "ANTARCTICA": "AQ",
+        "ANTIGUA AND BARBUDA": "AG",
+        "ARGENTINA": "AR",
+        "ARMENIA": "AM",
+        "ARUBA": "AW",
+        "AUSTRALIA": "AU",
+        "AUSTRIA": "AT",
+        "AZERBAIJAN": "AZ",
+        "BAHAMAS": "BS",
+        "BAHRAIN": "BH",
+        "BANGLADESH": "BD",
+        "BARBADOS": "BB",
+        "BELARUS": "BY",
+        "BELGIUM": "BE",
+        "BELIZE": "BZ",
+        "BENIN": "BJ",
+        "BERMUDA": "BM",
+        "BHUTAN": "BT",
+        "BOLIVIA, PLURINATIONAL STATE OF": "BO",
+        "BONAIRE, SINT EUSTATIUS AND SABA": "BQ",
+        "BOSNIA AND HERZEGOVINA": "BA",
+        "BOTSWANA": "BW",
+        "BOUVET ISLAND": "BV",
+        "BRAZIL": "BR",
+        "BRITISH INDIAN OCEAN TERRITORY": "IO",
+        "BRUNEI DARUSSALAM": "BN",
+        "BULGARIA": "BG",
+        "BURKINA FASO": "BF",
+        "BURUNDI": "BI",
+        "CAMBODIA": "KH",
+        "CAMEROON": "CM",
+        "CANADA": "CA",
+        "CAPE VERDE": "CV",
+        "CAYMAN ISLANDS": "KY",
+        "CENTRAL AFRICAN REPUBLIC": "CF",
+        "CHAD": "TD",
+        "CHILE": "CL",
+        "CHINA": "CN",
+        "CHRISTMAS ISLAND": "CX",
+        "COCOS (KEELING) ISLANDS": "CC",
+        "COLOMBIA": "CO",
+        "COMOROS": "KM",
+        "CONGO": "CG",
+        "CONGO, THE DEMOCRATIC REPUBLIC OF THE": "CD",
+        "COOK ISLANDS": "CK",
+        "COSTA RICA": "CR",
+        "CÔTE D'IVOIRE": "CI",
+        "CROATIA": "HR",
+        "CUBA": "CU",
+        "CURAÇAO": "CW",
+        "CYPRUS": "CY",
+        "CZECH REPUBLIC": "CZ",
+        "DENMARK": "DK",
+        "DJIBOUTI": "DJ",
+        "DOMINICA": "DM",
+        "DOMINICAN REPUBLIC": "DO",
+        "ECUADOR": "EC",
+        "EGYPT": "EG",
+        "EL SALVADOR": "SV",
+        "EQUATORIAL GUINEA": "GQ",
+        "ERITREA": "ER",
+        "ESTONIA": "EE",
+        "ETHIOPIA": "ET",
+        "FALKLAND ISLANDS (MALVINAS)": "FK",
+        "FAROE ISLANDS": "FO",
+        "FIJI": "FJ",
+        "FINLAND": "FI",
+        "FRANCE": "FR",
+        "FRENCH GUIANA": "GF",
+        "FRENCH POLYNESIA": "PF",
+        "FRENCH SOUTHERN TERRITORIES": "TF",
+        "GABON": "GA",
+        "GAMBIA": "GM",
+        "GEORGIA": "GE",
+        "GERMANY": "DE",
+        "GHANA": "GH",
+        "GIBRALTAR": "GI",
+        "GREECE": "GR",
+        "GREENLAND": "GL",
+        "GRENADA": "GD",
+        "GUADELOUPE": "GP",
+        "GUAM": "GU",
+        "GUATEMALA": "GT",
+        "GUERNSEY": "GG",
+        "GUINEA": "GN",
+        "GUINEA-BISSAU": "GW",
+        "GUYANA": "GY",
+        "HAITI": "HT",
+        "HEARD ISLAND AND MCDONALD ISLANDS": "HM",
+        "HOLY SEE (VATICAN CITY STATE)": "VA",
+        "HONDURAS": "HN",
+        "HONG KONG": "HK",
+        "HUNGARY": "HU",
+        "ICELAND": "IS",
+        "INDIA": "IN",
+        "INDONESIA": "ID",
+        "IRAN, ISLAMIC REPUBLIC OF": "IR",
+        "IRAQ": "IQ",
+        "IRELAND": "IE",
+        "ISLE OF MAN": "IM",
+        "ISRAEL": "IL",
+        "ITALY": "IT",
+        "JAMAICA": "JM",
+        "JAPAN": "JP",
+        "JERSEY": "JE",
+        "JORDAN": "JO",
+        "KAZAKHSTAN": "KZ",
+        "KENYA": "KE",
+        "KIRIBATI": "KI",
+        "KOREA, DEMOCRATIC PEOPLE'S REPUBLIC OF": "KP",
+        "KOREA, REPUBLIC OF": "KR",
+        "KUWAIT": "KW",
+        "KYRGYZSTAN": "KG",
+        "LAO PEOPLE'S DEMOCRATIC REPUBLIC": "LA",
+        "LATVIA": "LV",
+        "LEBANON": "LB",
+        "LESOTHO": "LS",
+        "LIBERIA": "LR",
+        "LIBYA": "LY",
+        "LIECHTENSTEIN": "LI",
+        "LITHUANIA": "LT",
+        "LUXEMBOURG": "LU",
+        "MACAO": "MO",
+        "MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF": "MK",
+        "MADAGASCAR": "MG",
+        "MALAWI": "MW",
+        "MALAYSIA": "MY",
+        "MALDIVES": "MV",
+        "MALI": "ML",
+        "MALTA": "MT",
+        "MARSHALL ISLANDS": "MH",
+        "MARTINIQUE": "MQ",
+        "MAURITANIA": "MR",
+        "MAURITIUS": "MU",
+        "MAYOTTE": "YT",
+        "MEXICO": "MX",
+        "MICRONESIA, FEDERATED STATES OF": "FM",
+        "MOLDOVA, REPUBLIC OF": "MD",
+        "MONACO": "MC",
+        "MONGOLIA": "MN",
+        "MONTENEGRO": "ME",
+        "MONTSERRAT": "MS",
+        "MOROCCO": "MA",
+        "MOZAMBIQUE": "MZ",
+        "MYANMAR": "MM",
+        "NAMIBIA": "NA",
+        "NAURU": "NR",
+        "NEPAL": "NP",
+        "NETHERLANDS": "NL",
+        "NEW CALEDONIA": "NC",
+        "NEW ZEALAND": "NZ",
+        "NICARAGUA": "NI",
+        "NIGER": "NE",
+        "NIGERIA": "NG",
+        "NIUE": "NU",
+        "NORFOLK ISLAND": "NF",
+        "NORTHERN MARIANA ISLANDS": "MP",
+        "NORWAY": "NO",
+        "OMAN": "OM",
+        "PAKISTAN": "PK",
+        "PALAU": "PW",
+        "PALESTINE, STATE OF": "PS",
+        "PANAMA": "PA",
+        "PAPUA NEW GUINEA": "PG",
+        "PARAGUAY": "PY",
+        "PERU": "PE",
+        "PHILIPPINES": "PH",
+        "PITCAIRN": "PN",
+        "POLAND": "PL",
+        "PORTUGAL": "PT",
+        "PUERTO RICO": "PR",
+        "QATAR": "QA",
+        "RÉUNION": "RE",
+        "ROMANIA": "RO",
+        "RUSSIAN FEDERATION": "RU",
+        "RWANDA": "RW",
+        "SAINT BARTHÉLEMY": "BL",
+        "SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA": "SH",
+        "SAINT KITTS AND NEVIS": "KN",
+        "SAINT LUCIA": "LC",
+        "SAINT MARTIN (FRENCH PART)": "MF",
+        "SAINT PIERRE AND MIQUELON": "PM",
+        "SAINT VINCENT AND THE GRENADINES": "VC",
+        "SAMOA": "WS",
+        "SAN MARINO": "SM",
+        "SAO TOME AND PRINCIPE": "ST",
+        "SAUDI ARABIA": "SA",
+        "SENEGAL": "SN",
+        "SERBIA": "RS",
+        "SEYCHELLES": "SC",
+        "SIERRA LEONE": "SL",
+        "SINGAPORE": "SG",
+        "SINT MAARTEN (DUTCH PART)": "SX",
+        "SLOVAKIA": "SK",
+        "SLOVENIA": "SI",
+        "SOLOMON ISLANDS": "SB",
+        "SOMALIA": "SO",
+        "SOUTH AFRICA": "ZA",
+        "SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS": "GS",
+        "SOUTH SUDAN": "SS",
+        "SPAIN": "ES",
+        "SRI LANKA": "LK",
+        "SUDAN": "SD",
+        "SURINAME": "SR",
+        "SVALBARD AND JAN MAYEN": "SJ",
+        "SWAZILAND": "SZ",
+        "SWEDEN": "SE",
+        "SWITZERLAND": "CH",
+        "SYRIAN ARAB REPUBLIC": "SY",
+        "TAIWAN, PROVINCE OF CHINA": "TW",
+        "TAJIKISTAN": "TJ",
+        "TANZANIA, UNITED REPUBLIC OF": "TZ",
+        "THAILAND": "TH",
+        "TIMOR-LESTE": "TL",
+        "TOGO": "TG",
+        "TOKELAU": "TK",
+        "TONGA": "TO",
+        "TRINIDAD AND TOBAGO": "TT",
+        "TUNISIA": "TN",
+        "TURKEY": "TR",
+        "TURKMENISTAN": "TM",
+        "TURKS AND CAICOS ISLANDS": "TC",
+        "TUVALU": "TV",
+        "UGANDA": "UG",
+        "UKRAINE": "UA",
+        "UNITED ARAB EMIRATES": "AE",
+        "UNITED KINGDOM": "GB",
+        "UNITED STATES": "US",
+        "UNITED STATES MINOR OUTLYING ISLANDS": "UM",
+        "URUGUAY": "UY",
+        "UZBEKISTAN": "UZ",
+        "VANUATU": "VU",
+        "VENEZUELA, BOLIVARIAN REPUBLIC OF": "VE",
+        "VIET NAM": "VN",
+        "VIRGIN ISLANDS, BRITISH": "VG",
+        "VIRGIN ISLANDS, U.S.": "VI",
+        "WALLIS AND FUTUNA": "WF",
+        "WESTERN SAHARA": "EH",
+        "YEMEN": "YE",
+        "ZAMBIA": "ZM",
+        "ZIMBABWE": "ZW"
+    };
 
-	function CountryCode() {
-		this.fromName = {};
-		this.fromCode = {};
+    function CountryCode() {
+        this.fromName = {};
+        this.fromCode = {};
 
-		var keys = Object.keys(countriesData);
-		for (i=0; i < keys.length; i++) {
-			var country = keys[i];
-			var code = countriesData[country];
-			var countryParts = country.split(/,\s+/);
-			var name = "";
+        var keys = Object.keys(countriesData);
+        for (i=0; i < keys.length; i++) {
+            var country = keys[i];
+            var code = countriesData[country];
+            var countryParts = country.split(/,\s+/);
+            var name = "";
 
-			for (ii=0; ii < countryParts.length; ii++) {
-				name += countryParts[ii];
-				this.fromCode[code.toUpperCase()] = name;
-				this.fromName[name.toUpperCase()] = code;
-				name += ', ';
-			}
-		}
-	}
+            for (ii=0; ii < countryParts.length; ii++) {
+                name += countryParts[ii];
+                this.fromCode[code.toUpperCase()] = name;
+                this.fromName[name.toUpperCase()] = code;
+                name += ', ';
+            }
+        }
+    }
 
-	CountryCode.prototype.getCode = function(name) {
-		return this.fromName[name.toUpperCase()];
-	};
+    CountryCode.prototype.getCode = function(name) {
+        return this.fromName[name.toUpperCase()];
+    };
 
-	CountryCode.prototype.getName = function(code) {
-		return this.fromCode[code.toUpperCase()];
-	};
+    CountryCode.prototype.getName = function(code) {
+        return this.fromCode[code.toUpperCase()];
+    };
 
 
-	window.CountryCode = CountryCode;
+    window.CountryCode = CountryCode;
 
 })();
 
@@ -472,8 +317,8 @@ for (let i = 0; i < country.length; i++) {
 }
 
 function display(){
-	let x = document.getElementById("country").value
-		return xx
+    let x = document.getElementById("country").value
+        return xx
 }
 
 function get_shade_values(country_dict){
@@ -492,12 +337,12 @@ function get_shade_values(country_dict){
 }
 
 function update_map(code, shade_val){
-	console.log(code)
-	let target = document.getElementById(code);
-	target.style.fill = '#003b4c';
+    console.log(code)
+    let target = document.getElementById(code);
+    target.style.fill = '#003b4c';
     target.style.fillOpacity = shade_val;
 
-}	
+}    
 
 function update_map2(code){
     let target = document.getElementById(code);
@@ -506,10 +351,10 @@ function update_map2(code){
 }
 
 function read_db(event){
-	let database = firebase.database().ref().child(event);
-	database.on('value', function(snapshot){
-		let data = snapshot.val();
-		var country_dict = data["countries"];
+    let database = firebase.database().ref().child(event);
+    database.on('value', function(snapshot){
+        let data = snapshot.val();
+        var country_dict = data["countries"];
         console.log(country_dict)
         var shade_dict = get_shade_values(country_dict)
         console.log(shade_dict)
@@ -529,57 +374,16 @@ function read_db(event){
                 update_map2(key)
             }
         }
-	})
+    })
 }
 
 window.addEventListener("load", main);
 
 
 function main(){
-	let selections = []
-	let country = new CountryCode();
+    let selections = []
+    let country = new CountryCode();
     
-     
+    read_db('Facing_History')
     
-    function addEventSelectionOnBodyThenLoadMap() {
-  let event_selection = document.getElementById("event-selected");
-  let event_deletion_selection =  document.getElementById("event-selected-delete");
-  // remove every children
-  while (event_selection.children.length > 0) {
-    event_selection.removeChild(event_selection.children[0]);
-  }
-  while (event_deletion_selection.children.length > 0) {
-    event_deletion_selection.removeChild(event_deletion_selection.children[0]);
-  }
-  // load the new event names then append them to
-  // the list of options to select events from
-  firebaseHelper.loadAllEventNames(function (events, is_error) {
-    if (is_error) {
-      console.error(events);
-      return;
-    }
-    events.forEach(function (event_name_received) {
-      let option_for_selection = document.createElement("option");
-      option_for_selection.value = event_name_received;
-      option_for_selection.innerText = event_name_received;
-      event_selection.appendChild(option_for_selection);
-
-      let option_for_deletion = document.createElement("option");
-      option_for_deletion.value = event_name_received;
-      option_for_deletion.innerText = event_name_received;
-      event_deletion_selection.appendChild(option_for_deletion);
-    });
-
-    // whenever we make new selection, re-display the map
-    event_selection.addEventListener("change", function () {
-      chosen_event_name = event_selection.value;
-      read_db(chosen_event_name);
-    });
-
-    // set the event to be whatever is currently on the value
-    chosen_event_name = event_selection.value;
-    read_db(chosen_event_name);
-  });
-}
-    addEventSelectionOnBodyThenLoadMap();
 }

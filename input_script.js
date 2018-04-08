@@ -218,6 +218,7 @@ firebase.initializeApp(config);
 
 
 	window.CountryCode = CountryCode;
+  window.countriesData = countriesData;
 
 })();
 
@@ -265,6 +266,49 @@ function edit_db(event, request){
 	});
 
 }
+function removeDataFromDatabase(event){
+    firebase.database().ref().child(event).remove();
+}
+
+function base_format(name){
+  let main_event = {};
+  let event = {};
+  let countries = {};
+  let count = 0;
+  for (var key in countriesData){
+    countries[countriesData[key]] = 0
+  }
+  event["countries"] = countries;
+  event["count"] = count;
+  main_event[name] = event;
+  return main_event;
+
+}
+function create_event(name){
+  firebase.database().ref(name).set(base_format(name)[name]);
+}
+
+function read_db(event){
+    let database = firebase.database().ref().child(event);
+    database.on('value', function(snapshot){
+        let data = snapshot.val();
+        //console.log(data["countries"]);
+        return data["countries"];
+    })
+}
+
+function reset_event(event){
+  removeDataFromDatabase(event);
+  create_event(event);
+}
+
+function backup(event){
+  let timestamp = new Date()
+  let database = firebase.database().ref()
+  database.child(event).once('value', function(snapshot){
+    database.child(event + timestamp).set(snapshot.val());
+});
+}
 
 
 
@@ -278,7 +322,7 @@ function main(){
 	let selection = document.getElementById("store")
 	let my_map_trigger = document.getElementById("done")
 	let clear_chosen = document.getElementById("clear")
-  let event = document.getElementById("event_chose")
+  let reset = document.getElementById("reset")
 
 	 selection.addEventListener("click", function (){
 	 	if (!inlist(display(), selections_code) && display() !== "sup"){
@@ -290,15 +334,30 @@ function main(){
 
 	 })
 
+   reset.addEventListener("click", function(){
+    let res = ''
+    let code = window.prompt("Enter Key: ", "--enter code--")
+    if(code == "FacingHistorySecret" ){
+      backup("Facing_History")
+      reset_event("Facing_History")
+      res = 'Event has been reset'
+    } else{
+      res = 'You do not have authorisation to do this'
+    }
+    document.getElementById('lol').innerText = res
+   })
+
+
 	 clear_chosen.addEventListener("click", function(){
 	 	selections_code = []
 	 	selections_country = []
+    console.log("heree")
 	 	create_list(selections_country)
 	 })
 
 	my_map_trigger.addEventListener("click", function(){
 		console.log(selections_code)
-		edit_db(events,selections_code)
+		edit_db("Facing_History",selections_code)
 	 	selections_code = []
 	 	selections_country = []
 	 	if(window.confirm("Are you sure you want to submit?")){
@@ -306,11 +365,6 @@ function main(){
 	}
 
 	})
-
-  event.addEventListener("click", function(){
-    let input =  getElementById("even")
-      events = input.value
-  })
 	
 }
 function create_list(chosen){
@@ -336,4 +390,5 @@ function create_list(chosen){
 	    	create_list(selections_country)
 	    })
 }
+
 }
